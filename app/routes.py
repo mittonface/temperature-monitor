@@ -50,3 +50,7 @@ def get_statistics():
         'avg_humidity': round(stats.avg_humidity, 1) if stats.avg_humidity else None,
         'period_hours': hours
     })
+
+@main.route('/health')
+def health_check():
+    return jsonify({'status': 'healthy', 'service': 'house-temp-tracker'}), 200
