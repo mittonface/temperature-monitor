@@ -23,6 +23,7 @@ services:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-dev-key}
       - NEST_CLIENT_ID=${NEST_CLIENT_ID}
       - NEST_CLIENT_SECRET=${NEST_CLIENT_SECRET}
+      - NEST_PROJECT_ID=${NEST_PROJECT_ID}
       - NEST_REFRESH_TOKEN=${NEST_REFRESH_TOKEN}
     volumes:
       - ./data:/app/data
