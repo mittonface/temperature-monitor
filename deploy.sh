@@ -7,7 +7,6 @@ echo "🚀 Starting deployment..."
 if [ ! -f .env ]; then
     echo "❌ Error: .env file not found!"
     echo "Please create a .env file with the following variables:"
-    echo "  DOMAIN=your-domain.com"
     echo "  FLASK_SECRET_KEY=your-secret-key"
     echo "  NEST_CLIENT_ID=your-nest-client-id"
     echo "  NEST_CLIENT_SECRET=your-nest-client-secret"
@@ -19,7 +18,7 @@ fi
 export $(cat .env | grep -v '^#' | xargs)
 
 # Validate required environment variables
-required_vars=("DOMAIN" "FLASK_SECRET_KEY" "NEST_CLIENT_ID" "NEST_CLIENT_SECRET" "NEST_REFRESH_TOKEN")
+required_vars=("FLASK_SECRET_KEY" "NEST_CLIENT_ID" "NEST_CLIENT_SECRET" "NEST_REFRESH_TOKEN")
 for var in "${required_vars[@]}"; do
     if [ -z "${!var}" ]; then
         echo "❌ Error: $var is not set in .env file!"
@@ -52,7 +51,5 @@ docker-compose ps
 echo "✅ Deployment completed!"
 echo ""
 echo "🌐 Your application should be accessible at:"
-echo "   HTTP:  http://${DOMAIN}"
-echo "   HTTPS: https://${DOMAIN} (after SSL setup)"
-echo ""
-echo "📝 To set up SSL certificates, run: ./init-letsencrypt.sh"
+echo "   Local: http://localhost:5001"
+echo "   Health check: http://localhost:5001/health"
