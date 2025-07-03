@@ -3,6 +3,6 @@ SHELL=/bin/bash
 BASH_ENV=/etc/environment
 
 # Collect temperature data every 5 minutes
-*/1 * * * * . /etc/environment && cd /app && python collect_data.py >> /var/log/cron.log 2>&1
+*/5 * * * * . /etc/environment && cd /app && python collect_data.py >> /var/log/cron.log 2>&1
 
 # Empty line at end required for crontab
