@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Temperature Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>House Temperature Monitor</h1>
+        
+        <div class="current-stats">
+            <div class="stat-card">
+                <h3>Current Temperature</h3>
+                <div class="stat-value" id="current-temp">--°F</div>
+            </div>
+            <div class="stat-card">
+                <h3>Current Humidity</h3>
+                <div class="stat-value" id="current-humidity">--%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Target Temperature</h3>
+                <div class="stat-value" id="target-temp">--°F</div>
+            </div>
+            <div class="stat-card">
+                <h3>HVAC Status</h3>
+                <div class="stat-value" id="hvac-status">--</div>
+            </div>
+        </div>
+        
+        <div class="time-selector">
+            <button onclick="loadData(6)" class="time-btn">6 Hours</button>
+            <button onclick="loadData(12)" class="time-btn">12 Hours</button>
+            <button onclick="loadData(24)" class="time-btn active">24 Hours</button>
+            <button onclick="loadData(48)" class="time-btn">48 Hours</button>
+            <button onclick="loadData(168)" class="time-btn">1 Week</button>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        
+        <div class="statistics">
+            <h2>Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Average:</span>
+                    <span class="stat-data" id="avg-temp">--°F</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Minimum:</span>
+                    <span class="stat-data" id="min-temp">--°F</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Maximum:</span>
+                    <span class="stat-data" id="max-temp">--°F</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Avg Humidity:</span>
+                    <span class="stat-data" id="avg-humidity">--%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
