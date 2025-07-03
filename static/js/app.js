@@ -6,11 +6,11 @@ async function loadCurrent() {
         const data = await response.json();
         
         document.getElementById('current-temp').textContent = 
-            data.temperature_c ? `${Math.round(data.temperature_c)}°C` : '--°C';
+            data.temperature_c ? `${Math.round(data.temperature_c * 2) / 2}°C` : '--°C';
         document.getElementById('current-humidity').textContent = 
             data.humidity ? `${Math.round(data.humidity)}%` : '--%';
         document.getElementById('target-temp').textContent = 
-            data.target_temperature_c ? `${Math.round(data.target_temperature_c)}°C` : '--°C';
+            data.target_temperature_c ? `${Math.round(data.target_temperature_c * 2) / 2}°C` : '--°C';
         document.getElementById('hvac-status').textContent = 
             data.hvac_state || '--';
     } catch (error) {
@@ -24,11 +24,11 @@ async function loadStatistics(hours) {
         const data = await response.json();
         
         document.getElementById('avg-temp').textContent = 
-            data.avg_temperature ? `${data.avg_temperature}°C` : '--°C';
+            data.avg_temperature ? `${Math.round(data.avg_temperature * 2) / 2}°C` : '--°C';
         document.getElementById('min-temp').textContent = 
-            data.min_temperature ? `${data.min_temperature}°C` : '--°C';
+            data.min_temperature ? `${Math.round(data.min_temperature * 2) / 2}°C` : '--°C';
         document.getElementById('max-temp').textContent = 
-            data.max_temperature ? `${data.max_temperature}°C` : '--°C';
+            data.max_temperature ? `${Math.round(data.max_temperature * 2) / 2}°C` : '--°C';
         document.getElementById('avg-humidity').textContent = 
             data.avg_humidity ? `${data.avg_humidity}%` : '--%';
     } catch (error) {
@@ -145,7 +145,7 @@ function updateChart(data) {
         datasets: [
             {
                 label: 'Temperature (°C)',
-                data: data.map(d => d.temperature_c),
+                data: data.map(d => Math.round(d.temperature_c * 2) / 2),
                 borderColor: '#3498db',
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
                 tension: 0.4,
@@ -153,7 +153,7 @@ function updateChart(data) {
             },
             {
                 label: 'Target Temperature (°C)',
-                data: data.map(d => d.target_temperature_c),
+                data: data.map(d => Math.round(d.target_temperature_c * 2) / 2),
                 borderColor: '#e74c3c',
                 backgroundColor: 'rgba(231, 76, 60, 0.1)',
                 borderDash: [5, 5],
