@@ -69,9 +69,12 @@ class NestClient:
         
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            print(f"Raw API response: {data}")
+            return data
         else:
             print(f"Failed to get thermostat data: {response.status_code}")
+            print(f"Error response: {response.text}")
             return None
 
 def collect_temperature_data():
@@ -99,10 +102,14 @@ def collect_temperature_data():
                 hvac_data = traits.get('sdm.devices.traits.ThermostatHvac', {})
                 
                 if temp_data:
+                    temp_c = temp_data.get('ambientTemperatureCelsius')
+                    print(f"Temperature data extracted: {temp_c}°C")
+                    print(f"Full temperature traits: {temp_data}")
+                    
                     reading = TemperatureReading(
                         device_name=device_data.get('displayName', 'Unknown'),
-                        temperature_c=temp_data.get('ambientTemperatureCelsius'),
-                        temperature_f=temp_data.get('ambientTemperatureCelsius', 0) * 9/5 + 32,
+                        temperature_c=temp_c,
+                        temperature_f=temp_c * 9/5 + 32 if temp_c else None,
                         humidity=humidity_data.get('ambientHumidityPercent'),
                         target_temperature_c=thermostat_data.get('heatCelsius') or thermostat_data.get('coolCelsius'),
                         target_temperature_f=(thermostat_data.get('heatCelsius') or thermostat_data.get('coolCelsius', 0)) * 9/5 + 32 if thermostat_data else None,

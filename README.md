@@ -83,7 +83,7 @@ pip install -r requirements.txt
 python run.py
 ```
 
-6. Access the web interface at http://localhost:5000
+6. Access the web interface at http://localhost:5001
 
 ## Features
 
@@ -93,6 +93,7 @@ python run.py
 - HVAC status tracking
 - Automatic data collection via cron job
 - Responsive web interface
+- **API Documentation**: Interactive Swagger UI at http://localhost:5001/api/docs
 
 ## Architecture
 

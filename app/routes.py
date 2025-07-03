@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, jsonify, request
 from app.models import TemperatureReading
 from app import db
+from app.nest_client import NestClient
+from app.swagger import get_swagger_spec
 from datetime import datetime, timedelta
 from sqlalchemy import func
 
@@ -54,3 +56,33 @@ def get_statistics():
 @main.route('/health')
 def health_check():
     return jsonify({'status': 'healthy', 'service': 'house-temp-tracker'}), 200
+
+@main.route('/api/nest/devices')
+def get_nest_devices():
+    """Get all Nest devices from the API"""
+    client = NestClient()
+    devices = client.get_devices()
+    
+    if devices is None:
+        return jsonify({'error': 'Failed to retrieve devices'}), 500
+    
+    return jsonify({
+        'devices': devices,
+        'count': len(devices)
+    })
+
+@main.route('/api/nest/device/<path:device_id>')
+def get_nest_device_data(device_id):
+    """Get specific device data from the Nest API"""
+    client = NestClient()
+    device_data = client.get_thermostat_data(device_id)
+    
+    if device_data is None:
+        return jsonify({'error': 'Failed to retrieve device data'}), 500
+    
+    return jsonify(device_data)
+
+@main.route('/api/swagger.json')
+def swagger_spec():
+    """Return the OpenAPI specification"""
+    return jsonify(get_swagger_spec())

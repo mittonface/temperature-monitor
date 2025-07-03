@@ -20,6 +20,9 @@ def create_app():
     from app.routes import main
     app.register_blueprint(main)
     
+    from app.swagger import init_swagger
+    init_swagger(app)
+    
     with app.app_context():
         db.create_all()
     
