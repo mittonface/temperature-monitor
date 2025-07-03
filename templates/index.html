@@ -6,6 +6,7 @@
     <title>House Temperature Monitor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
 </head>
 <body>
     <div class="container">
@@ -14,7 +15,7 @@
         <div class="current-stats">
             <div class="stat-card">
                 <h3>Current Temperature</h3>
-                <div class="stat-value" id="current-temp">--°F</div>
+                <div class="stat-value" id="current-temp">--°C</div>
             </div>
             <div class="stat-card">
                 <h3>Current Humidity</h3>
@@ -22,7 +23,7 @@
             </div>
             <div class="stat-card">
                 <h3>Target Temperature</h3>
-                <div class="stat-value" id="target-temp">--°F</div>
+                <div class="stat-value" id="target-temp">--°C</div>
             </div>
             <div class="stat-card">
                 <h3>HVAC Status</h3>
@@ -47,15 +48,15 @@
             <div class="stats-grid">
                 <div class="stat-item">
                     <span class="stat-label">Average:</span>
-                    <span class="stat-data" id="avg-temp">--°F</span>
+                    <span class="stat-data" id="avg-temp">--°C</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Minimum:</span>
-                    <span class="stat-data" id="min-temp">--°F</span>
+                    <span class="stat-data" id="min-temp">--°C</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Maximum:</span>
-                    <span class="stat-data" id="max-temp">--°F</span>
+                    <span class="stat-data" id="max-temp">--°C</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-label">Avg Humidity:</span>

@@ -6,11 +6,11 @@ async function loadCurrent() {
         const data = await response.json();
         
         document.getElementById('current-temp').textContent = 
-            data.temperature_f ? `${Math.round(data.temperature_f)}°F` : '--°F';
+            data.temperature_c ? `${Math.round(data.temperature_c)}°C` : '--°C';
         document.getElementById('current-humidity').textContent = 
             data.humidity ? `${Math.round(data.humidity)}%` : '--%';
         document.getElementById('target-temp').textContent = 
-            data.target_temperature_f ? `${Math.round(data.target_temperature_f)}°F` : '--°F';
+            data.target_temperature_c ? `${Math.round(data.target_temperature_c)}°C` : '--°C';
         document.getElementById('hvac-status').textContent = 
             data.hvac_state || '--';
     } catch (error) {
@@ -24,11 +24,11 @@ async function loadStatistics(hours) {
         const data = await response.json();
         
         document.getElementById('avg-temp').textContent = 
-            data.avg_temperature ? `${data.avg_temperature}°F` : '--°F';
+            data.avg_temperature ? `${data.avg_temperature}°C` : '--°C';
         document.getElementById('min-temp').textContent = 
-            data.min_temperature ? `${data.min_temperature}°F` : '--°F';
+            data.min_temperature ? `${data.min_temperature}°C` : '--°C';
         document.getElementById('max-temp').textContent = 
-            data.max_temperature ? `${data.max_temperature}°F` : '--°F';
+            data.max_temperature ? `${data.max_temperature}°C` : '--°C';
         document.getElementById('avg-humidity').textContent = 
             data.avg_humidity ? `${data.avg_humidity}%` : '--%';
     } catch (error) {
@@ -73,20 +73,87 @@ async function loadData(hours, buttonElement = null) {
 function updateChart(data) {
     const ctx = document.getElementById('temperatureChart').getContext('2d');
     
+    // Create annotations for HVAC states
+    const annotations = [];
+    let currentAnnotation = null;
+    
+    data.forEach((point, index) => {
+        const hvacState = point.hvac_state;
+        const timestamp = new Date(point.timestamp).toLocaleString();
+        
+        if (hvacState === 'HEATING' || hvacState === 'COOLING') {
+            if (!currentAnnotation || currentAnnotation.type !== hvacState) {
+                // Start new annotation
+                currentAnnotation = {
+                    type: hvacState,
+                    startIndex: index,
+                    endIndex: index,
+                    startLabel: timestamp,
+                    endLabel: timestamp
+                };
+            } else {
+                // Extend current annotation
+                currentAnnotation.endIndex = index;
+                currentAnnotation.endLabel = timestamp;
+            }
+        } else {
+            // End current annotation if exists
+            if (currentAnnotation) {
+                annotations.push({
+                    type: 'box',
+                    xMin: currentAnnotation.startIndex,
+                    xMax: currentAnnotation.endIndex,
+                    backgroundColor: currentAnnotation.type === 'HEATING' 
+                        ? 'rgba(255, 99, 71, 0.2)'  // Tomato for heating
+                        : 'rgba(135, 206, 235, 0.2)', // Sky blue for cooling
+                    borderColor: currentAnnotation.type === 'HEATING'
+                        ? 'rgba(255, 99, 71, 0.5)'
+                        : 'rgba(135, 206, 235, 0.5)',
+                    borderWidth: 1,
+                    label: {
+                        content: currentAnnotation.type,
+                        enabled: false
+                    }
+                });
+                currentAnnotation = null;
+            }
+        }
+    });
+    
+    // Add final annotation if exists
+    if (currentAnnotation) {
+        annotations.push({
+            type: 'box',
+            xMin: currentAnnotation.startIndex,
+            xMax: currentAnnotation.endIndex,
+            backgroundColor: currentAnnotation.type === 'HEATING' 
+                ? 'rgba(255, 99, 71, 0.2)'
+                : 'rgba(135, 206, 235, 0.2)',
+            borderColor: currentAnnotation.type === 'HEATING'
+                ? 'rgba(255, 99, 71, 0.5)'
+                : 'rgba(135, 206, 235, 0.5)',
+            borderWidth: 1,
+            label: {
+                content: currentAnnotation.type,
+                enabled: false
+            }
+        });
+    }
+    
     const chartData = {
         labels: data.map(d => new Date(d.timestamp).toLocaleString()),
         datasets: [
             {
-                label: 'Temperature (°F)',
-                data: data.map(d => d.temperature_f),
+                label: 'Temperature (°C)',
+                data: data.map(d => d.temperature_c),
                 borderColor: '#3498db',
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
                 tension: 0.4,
                 yAxisID: 'y-temp'
             },
             {
-                label: 'Target Temperature (°F)',
-                data: data.map(d => d.target_temperature_f),
+                label: 'Target Temperature (°C)',
+                data: data.map(d => d.target_temperature_c),
                 borderColor: '#e74c3c',
                 backgroundColor: 'rgba(231, 76, 60, 0.1)',
                 borderDash: [5, 5],
@@ -100,6 +167,24 @@ function updateChart(data) {
                 backgroundColor: 'rgba(46, 204, 113, 0.1)',
                 tension: 0.4,
                 yAxisID: 'y-humidity'
+            },
+            {
+                label: 'Heating',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 71, 0.2)',
+                borderColor: 'rgba(255, 99, 71, 0.5)',
+                pointRadius: 0,
+                showLine: false,
+                pointHoverRadius: 0
+            },
+            {
+                label: 'Cooling',
+                data: [],
+                backgroundColor: 'rgba(135, 206, 235, 0.2)',
+                borderColor: 'rgba(135, 206, 235, 0.5)',
+                pointRadius: 0,
+                showLine: false,
+                pointHoverRadius: 0
             }
         ]
     };
@@ -118,6 +203,9 @@ function updateChart(data) {
                 legend: {
                     display: true,
                     position: 'top',
+                },
+                annotation: {
+                    annotations: annotations
                 }
             },
             scales: {
@@ -134,7 +222,7 @@ function updateChart(data) {
                     position: 'left',
                     title: {
                         display: true,
-                        text: 'Temperature (°F)'
+                        text: 'Temperature (°C)'
                     }
                 },
                 'y-humidity': {

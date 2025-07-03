@@ -37,9 +37,9 @@ def get_statistics():
     since = datetime.utcnow() - timedelta(hours=hours)
     
     stats = db.session.query(
-        func.avg(TemperatureReading.temperature_f).label('avg_temp'),
-        func.min(TemperatureReading.temperature_f).label('min_temp'),
-        func.max(TemperatureReading.temperature_f).label('max_temp'),
+        func.avg(TemperatureReading.temperature_c).label('avg_temp'),
+        func.min(TemperatureReading.temperature_c).label('min_temp'),
+        func.max(TemperatureReading.temperature_c).label('max_temp'),
         func.avg(TemperatureReading.humidity).label('avg_humidity')
     ).filter(TemperatureReading.timestamp >= since).first()
     
