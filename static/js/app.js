@@ -36,12 +36,28 @@ async function loadStatistics(hours) {
     }
 }
 
-async function loadData(hours) {
+async function loadData(hours, buttonElement = null) {
     // Update active button
     document.querySelectorAll('.time-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    event.target.classList.add('active');
+    
+    // If called from button click, use the button element
+    // Otherwise, find the button with matching hours
+    if (buttonElement) {
+        buttonElement.classList.add('active');
+    } else {
+        // Find button with matching hours value
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            if ((hours === 6 && btn.textContent === '6 Hours') ||
+                (hours === 12 && btn.textContent === '12 Hours') ||
+                (hours === 24 && btn.textContent === '24 Hours') ||
+                (hours === 48 && btn.textContent === '48 Hours') ||
+                (hours === 168 && btn.textContent === '1 Week')) {
+                btn.classList.add('active');
+            }
+        });
+    }
     
     try {
         const response = await fetch(`/api/temperatures?hours=${hours}`);
@@ -146,8 +162,8 @@ function updateChart(data) {
 
 // Initial load
 loadCurrent();
-loadData(24);
-loadStatistics(24);
+loadData(6);
+loadStatistics(6);
 
 // Refresh current data every minute
 setInterval(loadCurrent, 60000);
