@@ -4,7 +4,7 @@ services:
   web:
     image: house-temp-tracker:latest
     ports:
-      - "5001:5001"
+      - "5003:5001"
     environment:
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-dev-key}
       - NEST_CLIENT_ID=${NEST_CLIENT_ID}

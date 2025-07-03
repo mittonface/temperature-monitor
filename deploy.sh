@@ -51,5 +51,5 @@ docker-compose ps
 echo "✅ Deployment completed!"
 echo ""
 echo "🌐 Your application should be accessible at:"
-echo "   Local: http://localhost:5001"
-echo "   Health check: http://localhost:5001/health"
+echo "   Local: http://localhost:5003"
+echo "   Health check: http://localhost:5003/health"
