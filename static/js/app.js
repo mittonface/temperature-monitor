@@ -167,24 +167,6 @@ function updateChart(data) {
                 backgroundColor: 'rgba(46, 204, 113, 0.1)',
                 tension: 0.4,
                 yAxisID: 'y-humidity'
-            },
-            {
-                label: 'Heating',
-                data: [],
-                backgroundColor: 'rgba(255, 99, 71, 0.2)',
-                borderColor: 'rgba(255, 99, 71, 0.5)',
-                pointRadius: 0,
-                showLine: false,
-                pointHoverRadius: 0
-            },
-            {
-                label: 'Cooling',
-                data: [],
-                backgroundColor: 'rgba(135, 206, 235, 0.2)',
-                borderColor: 'rgba(135, 206, 235, 0.5)',
-                pointRadius: 0,
-                showLine: false,
-                pointHoverRadius: 0
             }
         ]
     };
