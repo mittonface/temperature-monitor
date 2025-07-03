@@ -28,7 +28,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./crontab:/etc/cron.d/collect-data
-    command: /bin/sh -c "chmod 0644 /etc/cron.d/collect-data && crontab /etc/cron.d/collect-data && cron && tail -f /var/log/cron.log"
+    command: /bin/sh -c "printenv > /etc/environment && chmod 0644 /etc/cron.d/collect-data && crontab /etc/cron.d/collect-data && cron && tail -f /var/log/cron.log"
     restart: unless-stopped
     depends_on:
       - web
