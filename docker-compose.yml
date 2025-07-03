@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    build: .
+    image: house-temp-tracker:latest
     expose:
       - 5001
     environment:
