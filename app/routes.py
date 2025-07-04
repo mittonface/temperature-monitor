@@ -42,7 +42,10 @@ def get_statistics():
         func.avg(TemperatureReading.temperature_c).label('avg_temp'),
         func.min(TemperatureReading.temperature_c).label('min_temp'),
         func.max(TemperatureReading.temperature_c).label('max_temp'),
-        func.avg(TemperatureReading.humidity).label('avg_humidity')
+        func.avg(TemperatureReading.humidity).label('avg_humidity'),
+        func.avg(TemperatureReading.outside_temperature_c).label('avg_outside_temp'),
+        func.min(TemperatureReading.outside_temperature_c).label('min_outside_temp'),
+        func.max(TemperatureReading.outside_temperature_c).label('max_outside_temp')
     ).filter(TemperatureReading.timestamp >= since).first()
     
     return jsonify({
@@ -50,6 +53,9 @@ def get_statistics():
         'min_temperature': round(stats.min_temp, 1) if stats.min_temp else None,
         'max_temperature': round(stats.max_temp, 1) if stats.max_temp else None,
         'avg_humidity': round(stats.avg_humidity, 1) if stats.avg_humidity else None,
+        'avg_outside_temperature': round(stats.avg_outside_temp, 1) if stats.avg_outside_temp else None,
+        'min_outside_temperature': round(stats.min_outside_temp, 1) if stats.min_outside_temp else None,
+        'max_outside_temperature': round(stats.max_outside_temp, 1) if stats.max_outside_temp else None,
         'period_hours': hours
     })
 

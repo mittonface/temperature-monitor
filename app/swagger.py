@@ -165,6 +165,36 @@ def get_swagger_spec():
                         }
                     }
                 }
+            },
+            "/api/statistics": {
+                "get": {
+                    "summary": "Get temperature statistics",
+                    "description": "Get statistical analysis of temperature data",
+                    "parameters": [
+                        {
+                            "name": "hours",
+                            "in": "query",
+                            "required": False,
+                            "description": "Period for statistics (default: 24)",
+                            "schema": {
+                                "type": "integer",
+                                "default": 24
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "Temperature statistics",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/TemperatureStatistics"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "components": {
@@ -274,6 +304,14 @@ def get_swagger_spec():
                             "type": "string",
                             "description": "HVAC state"
                         },
+                        "outside_temperature_c": {
+                            "type": "number",
+                            "description": "Outside temperature in Celsius"
+                        },
+                        "outside_temperature_f": {
+                            "type": "number",
+                            "description": "Outside temperature in Fahrenheit"
+                        },
                         "timestamp": {
                             "type": "string",
                             "format": "date-time",
@@ -287,6 +325,43 @@ def get_swagger_spec():
                         "error": {
                             "type": "string",
                             "description": "Error message"
+                        }
+                    }
+                },
+                "TemperatureStatistics": {
+                    "type": "object",
+                    "properties": {
+                        "avg_temperature": {
+                            "type": "number",
+                            "description": "Average temperature in Celsius"
+                        },
+                        "min_temperature": {
+                            "type": "number",
+                            "description": "Minimum temperature in Celsius"
+                        },
+                        "max_temperature": {
+                            "type": "number",
+                            "description": "Maximum temperature in Celsius"
+                        },
+                        "avg_humidity": {
+                            "type": "number",
+                            "description": "Average humidity percentage"
+                        },
+                        "avg_outside_temperature": {
+                            "type": "number",
+                            "description": "Average outside temperature in Celsius"
+                        },
+                        "min_outside_temperature": {
+                            "type": "number",
+                            "description": "Minimum outside temperature in Celsius"
+                        },
+                        "max_outside_temperature": {
+                            "type": "number",
+                            "description": "Maximum outside temperature in Celsius"
+                        },
+                        "period_hours": {
+                            "type": "integer",
+                            "description": "Period in hours for the statistics"
                         }
                     }
                 }

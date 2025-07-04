@@ -13,6 +13,8 @@ async function loadCurrent() {
             data.target_temperature_c ? `${Math.round(data.target_temperature_c * 2) / 2}°C` : '--°C';
         document.getElementById('hvac-status').textContent = 
             data.hvac_state || '--';
+        document.getElementById('outside-temp').textContent = 
+            data.outside_temperature_c ? `${Math.round(data.outside_temperature_c * 2) / 2}°C` : '--°C';
     } catch (error) {
         console.error('Error loading current data:', error);
     }
@@ -31,6 +33,12 @@ async function loadStatistics(hours) {
             data.max_temperature ? `${Math.round(data.max_temperature * 2) / 2}°C` : '--°C';
         document.getElementById('avg-humidity').textContent = 
             data.avg_humidity ? `${data.avg_humidity}%` : '--%';
+        document.getElementById('avg-outside-temp').textContent = 
+            data.avg_outside_temperature ? `${Math.round(data.avg_outside_temperature * 2) / 2}°C` : '--°C';
+        document.getElementById('min-outside-temp').textContent = 
+            data.min_outside_temperature ? `${Math.round(data.min_outside_temperature * 2) / 2}°C` : '--°C';
+        document.getElementById('max-outside-temp').textContent = 
+            data.max_outside_temperature ? `${Math.round(data.max_outside_temperature * 2) / 2}°C` : '--°C';
     } catch (error) {
         console.error('Error loading statistics:', error);
     }
@@ -148,6 +156,15 @@ function updateChart(data) {
                 data: data.map(d => Math.round(d.temperature_c * 2) / 2),
                 borderColor: '#3498db',
                 backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                tension: 0.4,
+                yAxisID: 'y-temp'
+            },
+            {
+                label: 'Outside Temperature (°C)',
+                data: data.map(d => d.outside_temperature_c ? Math.round(d.outside_temperature_c * 2) / 2 : null),
+                borderColor: '#9b59b6',
+                backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                borderDash: [3, 3],
                 tension: 0.4,
                 yAxisID: 'y-temp'
             },

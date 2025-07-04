@@ -3,6 +3,7 @@ import requests
 from datetime import datetime
 from app import db
 from app.models import TemperatureReading
+from app.weather_client import WeatherClient
 
 class NestClient:
     def __init__(self):
@@ -83,11 +84,24 @@ def collect_temperature_data():
     
     with app.app_context():
         client = NestClient()
+        weather_client = WeatherClient()
         devices = client.get_devices()
         
         if not devices:
             print("No devices found or authentication failed")
             return
+        
+        # Get current weather data
+        weather_data = weather_client.get_current_weather()
+        outside_temp_c = None
+        outside_temp_f = None
+        
+        if weather_data:
+            outside_temp_c = weather_data['temperature_c']
+            outside_temp_f = weather_data['temperature_f']
+            print(f"Outside temperature: {outside_temp_c}°C / {outside_temp_f}°F")
+        else:
+            print("Could not fetch weather data")
         
         for device in devices:
             device_id = device.get('name')
@@ -114,7 +128,9 @@ def collect_temperature_data():
                         target_temperature_c=thermostat_data.get('heatCelsius') or thermostat_data.get('coolCelsius'),
                         target_temperature_f=(thermostat_data.get('heatCelsius') or thermostat_data.get('coolCelsius', 0)) * 9/5 + 32 if thermostat_data else None,
                         hvac_mode=hvac_data.get('mode'),
-                        hvac_state=hvac_data.get('status')
+                        hvac_state=hvac_data.get('status'),
+                        outside_temperature_c=outside_temp_c,
+                        outside_temperature_f=outside_temp_f
                     )
                     
                     db.session.add(reading)
