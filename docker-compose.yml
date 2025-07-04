@@ -11,6 +11,9 @@ services:
       - NEST_CLIENT_SECRET=${NEST_CLIENT_SECRET}
       - NEST_PROJECT_ID=${NEST_PROJECT_ID}
       - NEST_REFRESH_TOKEN=${NEST_REFRESH_TOKEN}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - LOCATION_LAT=${LOCATION_LAT}
+      - LOCATION_LON=${LOCATION_LON}
     volumes:
       - ./data:/app/data
     restart: unless-stopped
@@ -25,6 +28,9 @@ services:
       - NEST_CLIENT_SECRET=${NEST_CLIENT_SECRET}
       - NEST_PROJECT_ID=${NEST_PROJECT_ID}
       - NEST_REFRESH_TOKEN=${NEST_REFRESH_TOKEN}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - LOCATION_LAT=${LOCATION_LAT}
+      - LOCATION_LON=${LOCATION_LON}
     volumes:
       - ./data:/app/data
       - ./crontab:/etc/cron.d/collect-data
