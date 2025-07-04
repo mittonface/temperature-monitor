@@ -87,7 +87,7 @@ function updateChart(data) {
     
     data.forEach((point, index) => {
         const hvacState = point.hvac_state;
-        const timestamp = new Date(point.timestamp).toLocaleString();
+        const timestamp = new Date(point.timestamp).toLocaleString('en-US', { timeZone: 'America/New_York' });
         
         if (hvacState === 'HEATING' || hvacState === 'COOLING') {
             if (!currentAnnotation || currentAnnotation.type !== hvacState) {
@@ -149,7 +149,7 @@ function updateChart(data) {
     }
     
     const chartData = {
-        labels: data.map(d => new Date(d.timestamp).toLocaleString()),
+        labels: data.map(d => new Date(d.timestamp).toLocaleString('en-US', { timeZone: 'America/New_York' })),
         datasets: [
             {
                 label: 'Temperature (°C)',
