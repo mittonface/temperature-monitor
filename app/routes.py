@@ -48,6 +48,40 @@ def get_statistics():
         func.max(TemperatureReading.outside_temperature_c).label('max_outside_temp')
     ).filter(TemperatureReading.timestamp >= since).first()
     
+    # Calculate heating and cooling durations
+    readings = TemperatureReading.query.filter(
+        TemperatureReading.timestamp >= since
+    ).order_by(TemperatureReading.timestamp).all()
+    
+    heating_duration = timedelta()
+    cooling_duration = timedelta()
+    
+    for i in range(len(readings) - 1):
+        current_reading = readings[i]
+        next_reading = readings[i + 1]
+        time_diff = next_reading.timestamp - current_reading.timestamp
+        
+        if current_reading.hvac_state == 'HEATING':
+            heating_duration += time_diff
+        elif current_reading.hvac_state == 'COOLING':
+            cooling_duration += time_diff
+    
+    # Handle the last reading (assume it continues until now)
+    if readings and len(readings) > 0:
+        last_reading = readings[-1]
+        time_diff = datetime.utcnow() - last_reading.timestamp
+        
+        if last_reading.hvac_state == 'HEATING':
+            heating_duration += time_diff
+        elif last_reading.hvac_state == 'COOLING':
+            cooling_duration += time_diff
+    
+    # Convert durations to hours and minutes
+    heating_hours = int(heating_duration.total_seconds() // 3600)
+    heating_minutes = int((heating_duration.total_seconds() % 3600) // 60)
+    cooling_hours = int(cooling_duration.total_seconds() // 3600)
+    cooling_minutes = int((cooling_duration.total_seconds() % 3600) // 60)
+    
     return jsonify({
         'avg_temperature': round(stats.avg_temp, 1) if stats.avg_temp else None,
         'min_temperature': round(stats.min_temp, 1) if stats.min_temp else None,
@@ -56,6 +90,10 @@ def get_statistics():
         'avg_outside_temperature': round(stats.avg_outside_temp, 1) if stats.avg_outside_temp else None,
         'min_outside_temperature': round(stats.min_outside_temp, 1) if stats.min_outside_temp else None,
         'max_outside_temperature': round(stats.max_outside_temp, 1) if stats.max_outside_temp else None,
+        'heating_duration_hours': heating_hours,
+        'heating_duration_minutes': heating_minutes,
+        'cooling_duration_hours': cooling_hours,
+        'cooling_duration_minutes': cooling_minutes,
         'period_hours': hours
     })
 
