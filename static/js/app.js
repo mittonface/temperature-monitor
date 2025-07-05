@@ -55,6 +55,17 @@ async function loadStatistics(hours) {
       data.max_outside_temperature
         ? `${Math.round(data.max_outside_temperature * 2) / 2}°C`
         : "--°C";
+    
+    // Display heating and cooling durations
+    const heatingDuration = data.heating_duration_hours !== undefined
+      ? `${data.heating_duration_hours}h ${data.heating_duration_minutes}m`
+      : "--";
+    const coolingDuration = data.cooling_duration_hours !== undefined
+      ? `${data.cooling_duration_hours}h ${data.cooling_duration_minutes}m`
+      : "--";
+    
+    document.getElementById("heating-duration").textContent = heatingDuration;
+    document.getElementById("cooling-duration").textContent = coolingDuration;
   } catch (error) {
     console.error("Error loading statistics:", error);
   }
