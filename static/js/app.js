@@ -1,250 +1,282 @@
 let temperatureChart = null;
 
 async function loadCurrent() {
-    try {
-        const response = await fetch('/api/current');
-        const data = await response.json();
-        
-        document.getElementById('current-temp').textContent = 
-            data.temperature_c ? `${Math.round(data.temperature_c * 2) / 2}°C` : '--°C';
-        document.getElementById('current-humidity').textContent = 
-            data.humidity ? `${Math.round(data.humidity)}%` : '--%';
-        document.getElementById('target-temp').textContent = 
-            data.target_temperature_c ? `${Math.round(data.target_temperature_c * 2) / 2}°C` : '--°C';
-        document.getElementById('hvac-status').textContent = 
-            data.hvac_state || '--';
-        document.getElementById('outside-temp').textContent = 
-            data.outside_temperature_c ? `${Math.round(data.outside_temperature_c * 2) / 2}°C` : '--°C';
-    } catch (error) {
-        console.error('Error loading current data:', error);
-    }
+  try {
+    const response = await fetch("/api/current");
+    const data = await response.json();
+
+    document.getElementById("current-temp").textContent = data.temperature_c
+      ? `${Math.round(data.temperature_c * 2) / 2}°C`
+      : "--°C";
+    document.getElementById("current-humidity").textContent = data.humidity
+      ? `${Math.round(data.humidity)}%`
+      : "--%";
+    document.getElementById("target-temp").textContent =
+      data.target_temperature_c
+        ? `${Math.round(data.target_temperature_c * 2) / 2}°C`
+        : "--°C";
+    document.getElementById("hvac-status").textContent =
+      data.hvac_state || "--";
+    document.getElementById("outside-temp").textContent =
+      data.outside_temperature_c
+        ? `${Math.round(data.outside_temperature_c * 2) / 2}°C`
+        : "--°C";
+  } catch (error) {
+    console.error("Error loading current data:", error);
+  }
 }
 
 async function loadStatistics(hours) {
-    try {
-        const response = await fetch(`/api/statistics?hours=${hours}`);
-        const data = await response.json();
-        
-        document.getElementById('avg-temp').textContent = 
-            data.avg_temperature ? `${Math.round(data.avg_temperature * 2) / 2}°C` : '--°C';
-        document.getElementById('min-temp').textContent = 
-            data.min_temperature ? `${Math.round(data.min_temperature * 2) / 2}°C` : '--°C';
-        document.getElementById('max-temp').textContent = 
-            data.max_temperature ? `${Math.round(data.max_temperature * 2) / 2}°C` : '--°C';
-        document.getElementById('avg-humidity').textContent = 
-            data.avg_humidity ? `${data.avg_humidity}%` : '--%';
-        document.getElementById('avg-outside-temp').textContent = 
-            data.avg_outside_temperature ? `${Math.round(data.avg_outside_temperature * 2) / 2}°C` : '--°C';
-        document.getElementById('min-outside-temp').textContent = 
-            data.min_outside_temperature ? `${Math.round(data.min_outside_temperature * 2) / 2}°C` : '--°C';
-        document.getElementById('max-outside-temp').textContent = 
-            data.max_outside_temperature ? `${Math.round(data.max_outside_temperature * 2) / 2}°C` : '--°C';
-    } catch (error) {
-        console.error('Error loading statistics:', error);
-    }
+  try {
+    const response = await fetch(`/api/statistics?hours=${hours}`);
+    const data = await response.json();
+
+    document.getElementById("avg-temp").textContent = data.avg_temperature
+      ? `${Math.round(data.avg_temperature * 2) / 2}°C`
+      : "--°C";
+    document.getElementById("min-temp").textContent = data.min_temperature
+      ? `${Math.round(data.min_temperature * 2) / 2}°C`
+      : "--°C";
+    document.getElementById("max-temp").textContent = data.max_temperature
+      ? `${Math.round(data.max_temperature * 2) / 2}°C`
+      : "--°C";
+    document.getElementById("avg-humidity").textContent = data.avg_humidity
+      ? `${data.avg_humidity}%`
+      : "--%";
+    document.getElementById("avg-outside-temp").textContent =
+      data.avg_outside_temperature
+        ? `${Math.round(data.avg_outside_temperature * 2) / 2}°C`
+        : "--°C";
+    document.getElementById("min-outside-temp").textContent =
+      data.min_outside_temperature
+        ? `${Math.round(data.min_outside_temperature * 2) / 2}°C`
+        : "--°C";
+    document.getElementById("max-outside-temp").textContent =
+      data.max_outside_temperature
+        ? `${Math.round(data.max_outside_temperature * 2) / 2}°C`
+        : "--°C";
+  } catch (error) {
+    console.error("Error loading statistics:", error);
+  }
 }
 
 async function loadData(hours, buttonElement = null) {
-    // Update active button
-    document.querySelectorAll('.time-btn').forEach(btn => {
-        btn.classList.remove('active');
+  // Update active button
+  document.querySelectorAll(".time-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  // If called from button click, use the button element
+  // Otherwise, find the button with matching hours
+  if (buttonElement) {
+    buttonElement.classList.add("active");
+  } else {
+    // Find button with matching hours value
+    document.querySelectorAll(".time-btn").forEach((btn) => {
+      if (
+        (hours === 6 && btn.textContent === "6 Hours") ||
+        (hours === 12 && btn.textContent === "12 Hours") ||
+        (hours === 24 && btn.textContent === "24 Hours") ||
+        (hours === 48 && btn.textContent === "48 Hours") ||
+        (hours === 168 && btn.textContent === "1 Week")
+      ) {
+        btn.classList.add("active");
+      }
     });
-    
-    // If called from button click, use the button element
-    // Otherwise, find the button with matching hours
-    if (buttonElement) {
-        buttonElement.classList.add('active');
-    } else {
-        // Find button with matching hours value
-        document.querySelectorAll('.time-btn').forEach(btn => {
-            if ((hours === 6 && btn.textContent === '6 Hours') ||
-                (hours === 12 && btn.textContent === '12 Hours') ||
-                (hours === 24 && btn.textContent === '24 Hours') ||
-                (hours === 48 && btn.textContent === '48 Hours') ||
-                (hours === 168 && btn.textContent === '1 Week')) {
-                btn.classList.add('active');
-            }
-        });
-    }
-    
-    try {
-        const response = await fetch(`/api/temperatures?hours=${hours}`);
-        const data = await response.json();
-        
-        updateChart(data);
-        await loadStatistics(hours);
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
+  }
+
+  try {
+    const response = await fetch(`/api/temperatures?hours=${hours}`);
+    const data = await response.json();
+
+    updateChart(data);
+    await loadStatistics(hours);
+  } catch (error) {
+    console.error("Error loading data:", error);
+  }
 }
 
 function updateChart(data) {
-    const ctx = document.getElementById('temperatureChart').getContext('2d');
-    
-    // Create annotations for HVAC states
-    const annotations = [];
-    let currentAnnotation = null;
-    
-    data.forEach((point, index) => {
-        const hvacState = point.hvac_state;
-        const timestamp = new Date(point.timestamp).toLocaleString('en-US', { timeZone: 'America/New_York' });
-        
-        if (hvacState === 'HEATING' || hvacState === 'COOLING') {
-            if (!currentAnnotation || currentAnnotation.type !== hvacState) {
-                // Start new annotation
-                currentAnnotation = {
-                    type: hvacState,
-                    startIndex: index,
-                    endIndex: index,
-                    startLabel: timestamp,
-                    endLabel: timestamp
-                };
-            } else {
-                // Extend current annotation
-                currentAnnotation.endIndex = index;
-                currentAnnotation.endLabel = timestamp;
-            }
-        } else {
-            // End current annotation if exists
-            if (currentAnnotation) {
-                annotations.push({
-                    type: 'box',
-                    xMin: currentAnnotation.startIndex,
-                    xMax: currentAnnotation.endIndex,
-                    backgroundColor: currentAnnotation.type === 'HEATING' 
-                        ? 'rgba(255, 99, 71, 0.2)'  // Tomato for heating
-                        : 'rgba(135, 206, 235, 0.2)', // Sky blue for cooling
-                    borderColor: currentAnnotation.type === 'HEATING'
-                        ? 'rgba(255, 99, 71, 0.5)'
-                        : 'rgba(135, 206, 235, 0.5)',
-                    borderWidth: 1,
-                    label: {
-                        content: currentAnnotation.type,
-                        enabled: false
-                    }
-                });
-                currentAnnotation = null;
-            }
-        }
+  const ctx = document.getElementById("temperatureChart").getContext("2d");
+
+  // Create annotations for HVAC states
+  const annotations = [];
+  let currentAnnotation = null;
+
+  data.forEach((point, index) => {
+    const hvacState = point.hvac_state;
+    const timestamp = new Date(point.timestamp + "Z").toLocaleString("en-US", {
+      timeZone: "America/New_York",
     });
-    
-    // Add final annotation if exists
-    if (currentAnnotation) {
+
+    if (hvacState === "HEATING" || hvacState === "COOLING") {
+      if (!currentAnnotation || currentAnnotation.type !== hvacState) {
+        // Start new annotation
+        currentAnnotation = {
+          type: hvacState,
+          startIndex: index,
+          endIndex: index,
+          startLabel: timestamp,
+          endLabel: timestamp,
+        };
+      } else {
+        // Extend current annotation
+        currentAnnotation.endIndex = index;
+        currentAnnotation.endLabel = timestamp;
+      }
+    } else {
+      // End current annotation if exists
+      if (currentAnnotation) {
         annotations.push({
-            type: 'box',
-            xMin: currentAnnotation.startIndex,
-            xMax: currentAnnotation.endIndex,
-            backgroundColor: currentAnnotation.type === 'HEATING' 
-                ? 'rgba(255, 99, 71, 0.2)'
-                : 'rgba(135, 206, 235, 0.2)',
-            borderColor: currentAnnotation.type === 'HEATING'
-                ? 'rgba(255, 99, 71, 0.5)'
-                : 'rgba(135, 206, 235, 0.5)',
-            borderWidth: 1,
-            label: {
-                content: currentAnnotation.type,
-                enabled: false
-            }
+          type: "box",
+          xMin: currentAnnotation.startIndex,
+          xMax: currentAnnotation.endIndex,
+          backgroundColor:
+            currentAnnotation.type === "HEATING"
+              ? "rgba(255, 99, 71, 0.2)" // Tomato for heating
+              : "rgba(135, 206, 235, 0.2)", // Sky blue for cooling
+          borderColor:
+            currentAnnotation.type === "HEATING"
+              ? "rgba(255, 99, 71, 0.5)"
+              : "rgba(135, 206, 235, 0.5)",
+          borderWidth: 1,
+          label: {
+            content: currentAnnotation.type,
+            enabled: false,
+          },
         });
+        currentAnnotation = null;
+      }
     }
-    
-    const chartData = {
-        labels: data.map(d => new Date(d.timestamp).toLocaleString('en-US', { timeZone: 'America/New_York' })),
-        datasets: [
-            {
-                label: 'Temperature (°C)',
-                data: data.map(d => Math.round(d.temperature_c * 2) / 2),
-                borderColor: '#3498db',
-                backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y-temp'
-            },
-            {
-                label: 'Outside Temperature (°C)',
-                data: data.map(d => d.outside_temperature_c ? Math.round(d.outside_temperature_c * 2) / 2 : null),
-                borderColor: '#9b59b6',
-                backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                borderDash: [3, 3],
-                tension: 0.4,
-                yAxisID: 'y-temp'
-            },
-            {
-                label: 'Target Temperature (°C)',
-                data: data.map(d => Math.round(d.target_temperature_c * 2) / 2),
-                borderColor: '#e74c3c',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderDash: [5, 5],
-                tension: 0.4,
-                yAxisID: 'y-temp'
-            },
-            {
-                label: 'Humidity (%)',
-                data: data.map(d => d.humidity),
-                borderColor: '#2ecc71',
-                backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                tension: 0.4,
-                yAxisID: 'y-humidity'
-            }
-        ]
-    };
-    
-    const config = {
-        type: 'line',
-        data: chartData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                },
-                annotation: {
-                    annotations: annotations
-                }
-            },
-            scales: {
-                x: {
-                    display: true,
-                    title: {
-                        display: true,
-                        text: 'Time'
-                    }
-                },
-                'y-temp': {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'Temperature (°C)'
-                    }
-                },
-                'y-humidity': {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    title: {
-                        display: true,
-                        text: 'Humidity (%)'
-                    },
-                    grid: {
-                        drawOnChartArea: false,
-                    }
-                }
-            }
-        }
-    };
-    
-    if (temperatureChart) {
-        temperatureChart.destroy();
-    }
-    
-    temperatureChart = new Chart(ctx, config);
+  });
+
+  // Add final annotation if exists
+  if (currentAnnotation) {
+    annotations.push({
+      type: "box",
+      xMin: currentAnnotation.startIndex,
+      xMax: currentAnnotation.endIndex,
+      backgroundColor:
+        currentAnnotation.type === "HEATING"
+          ? "rgba(255, 99, 71, 0.2)"
+          : "rgba(135, 206, 235, 0.2)",
+      borderColor:
+        currentAnnotation.type === "HEATING"
+          ? "rgba(255, 99, 71, 0.5)"
+          : "rgba(135, 206, 235, 0.5)",
+      borderWidth: 1,
+      label: {
+        content: currentAnnotation.type,
+        enabled: false,
+      },
+    });
+  }
+
+  const chartData = {
+    labels: data.map((d) =>
+      new Date(d.timestamp + "Z").toLocaleString("en-US", {
+        timeZone: "America/New_York",
+      })
+    ),
+    datasets: [
+      {
+        label: "Temperature (°C)",
+        data: data.map((d) => Math.round(d.temperature_c * 2) / 2),
+        borderColor: "#3498db",
+        backgroundColor: "rgba(52, 152, 219, 0.1)",
+        tension: 0.4,
+        yAxisID: "y-temp",
+      },
+      {
+        label: "Outside Temperature (°C)",
+        data: data.map((d) =>
+          d.outside_temperature_c
+            ? Math.round(d.outside_temperature_c * 2) / 2
+            : null
+        ),
+        borderColor: "#9b59b6",
+        backgroundColor: "rgba(155, 89, 182, 0.1)",
+        borderDash: [3, 3],
+        tension: 0.4,
+        yAxisID: "y-temp",
+      },
+      {
+        label: "Target Temperature (°C)",
+        data: data.map((d) => Math.round(d.target_temperature_c * 2) / 2),
+        borderColor: "#e74c3c",
+        backgroundColor: "rgba(231, 76, 60, 0.1)",
+        borderDash: [5, 5],
+        tension: 0.4,
+        yAxisID: "y-temp",
+      },
+      {
+        label: "Humidity (%)",
+        data: data.map((d) => d.humidity),
+        borderColor: "#2ecc71",
+        backgroundColor: "rgba(46, 204, 113, 0.1)",
+        tension: 0.4,
+        yAxisID: "y-humidity",
+      },
+    ],
+  };
+
+  const config = {
+    type: "line",
+    data: chartData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+        },
+        annotation: {
+          annotations: annotations,
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          title: {
+            display: true,
+            text: "Time",
+          },
+        },
+        "y-temp": {
+          type: "linear",
+          display: true,
+          position: "left",
+          title: {
+            display: true,
+            text: "Temperature (°C)",
+          },
+        },
+        "y-humidity": {
+          type: "linear",
+          display: true,
+          position: "right",
+          title: {
+            display: true,
+            text: "Humidity (%)",
+          },
+          grid: {
+            drawOnChartArea: false,
+          },
+        },
+      },
+    },
+  };
+
+  if (temperatureChart) {
+    temperatureChart.destroy();
+  }
+
+  temperatureChart = new Chart(ctx, config);
 }
 
 // Initial load
@@ -257,7 +289,7 @@ setInterval(loadCurrent, 60000);
 
 // Refresh chart data every 5 minutes
 setInterval(() => {
-    const activeBtn = document.querySelector('.time-btn.active');
-    const hours = parseInt(activeBtn.textContent) || 24;
-    loadData(hours);
+  const activeBtn = document.querySelector(".time-btn.active");
+  const hours = parseInt(activeBtn.textContent) || 24;
+  loadData(hours);
 }, 300000);
