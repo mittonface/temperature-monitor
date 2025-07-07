@@ -45,7 +45,10 @@ def get_statistics():
         func.avg(TemperatureReading.humidity).label('avg_humidity'),
         func.avg(TemperatureReading.outside_temperature_c).label('avg_outside_temp'),
         func.min(TemperatureReading.outside_temperature_c).label('min_outside_temp'),
-        func.max(TemperatureReading.outside_temperature_c).label('max_outside_temp')
+        func.max(TemperatureReading.outside_temperature_c).label('max_outside_temp'),
+        func.avg(TemperatureReading.outside_humidity).label('avg_outside_humidity'),
+        func.min(TemperatureReading.outside_humidity).label('min_outside_humidity'),
+        func.max(TemperatureReading.outside_humidity).label('max_outside_humidity')
     ).filter(TemperatureReading.timestamp >= since).first()
     
     # Calculate heating and cooling durations
@@ -90,6 +93,9 @@ def get_statistics():
         'avg_outside_temperature': round(stats.avg_outside_temp, 1) if stats.avg_outside_temp else None,
         'min_outside_temperature': round(stats.min_outside_temp, 1) if stats.min_outside_temp else None,
         'max_outside_temperature': round(stats.max_outside_temp, 1) if stats.max_outside_temp else None,
+        'avg_outside_humidity': round(stats.avg_outside_humidity, 1) if stats.avg_outside_humidity else None,
+        'min_outside_humidity': round(stats.min_outside_humidity, 1) if stats.min_outside_humidity else None,
+        'max_outside_humidity': round(stats.max_outside_humidity, 1) if stats.max_outside_humidity else None,
         'heating_duration_hours': heating_hours,
         'heating_duration_minutes': heating_minutes,
         'cooling_duration_hours': cooling_hours,

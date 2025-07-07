@@ -14,6 +14,7 @@ class TemperatureReading(db.Model):
     hvac_state = db.Column(db.String(50))
     outside_temperature_c = db.Column(db.Float)
     outside_temperature_f = db.Column(db.Float)
+    outside_humidity = db.Column(db.Float)
     
     def to_dict(self):
         return {
@@ -28,5 +29,6 @@ class TemperatureReading(db.Model):
             'hvac_mode': self.hvac_mode,
             'hvac_state': self.hvac_state,
             'outside_temperature_c': self.outside_temperature_c,
-            'outside_temperature_f': self.outside_temperature_f
+            'outside_temperature_f': self.outside_temperature_f,
+            'outside_humidity': self.outside_humidity
         }

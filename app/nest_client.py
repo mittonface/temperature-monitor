@@ -95,11 +95,14 @@ def collect_temperature_data():
         weather_data = weather_client.get_current_weather()
         outside_temp_c = None
         outside_temp_f = None
+        outside_humidity = None
         
         if weather_data:
             outside_temp_c = weather_data['temperature_c']
             outside_temp_f = weather_data['temperature_f']
+            outside_humidity = weather_data['humidity']
             print(f"Outside temperature: {outside_temp_c}°C / {outside_temp_f}°F")
+            print(f"Outside humidity: {outside_humidity}%")
         else:
             print("Could not fetch weather data")
         
@@ -130,7 +133,8 @@ def collect_temperature_data():
                         hvac_mode=hvac_data.get('mode'),
                         hvac_state=hvac_data.get('status'),
                         outside_temperature_c=outside_temp_c,
-                        outside_temperature_f=outside_temp_f
+                        outside_temperature_f=outside_temp_f,
+                        outside_humidity=outside_humidity
                     )
                     
                     db.session.add(reading)

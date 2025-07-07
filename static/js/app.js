@@ -21,6 +21,9 @@ async function loadCurrent() {
       data.outside_temperature_c
         ? `${Math.round(data.outside_temperature_c * 2) / 2}°C`
         : "--°C";
+    document.getElementById("outside-humidity").textContent = data.outside_humidity
+      ? `${Math.round(data.outside_humidity)}%`
+      : "--%";
   } catch (error) {
     console.error("Error loading current data:", error);
   }
@@ -55,6 +58,18 @@ async function loadStatistics(hours) {
       data.max_outside_temperature
         ? `${Math.round(data.max_outside_temperature * 2) / 2}°C`
         : "--°C";
+    document.getElementById("avg-outside-humidity").textContent =
+      data.avg_outside_humidity
+        ? `${Math.round(data.avg_outside_humidity)}%`
+        : "--%";
+    document.getElementById("min-outside-humidity").textContent =
+      data.min_outside_humidity
+        ? `${Math.round(data.min_outside_humidity)}%`
+        : "--%";
+    document.getElementById("max-outside-humidity").textContent =
+      data.max_outside_humidity
+        ? `${Math.round(data.max_outside_humidity)}%`
+        : "--%";
     
     // Display heating and cooling durations
     const heatingDuration = data.heating_duration_hours !== undefined
@@ -225,6 +240,15 @@ function updateChart(data) {
         data: data.map((d) => d.humidity),
         borderColor: "#2ecc71",
         backgroundColor: "rgba(46, 204, 113, 0.1)",
+        tension: 0.4,
+        yAxisID: "y-humidity",
+      },
+      {
+        label: "Outside Humidity (%)",
+        data: data.map((d) => d.outside_humidity),
+        borderColor: "#f39c12",
+        backgroundColor: "rgba(243, 156, 18, 0.1)",
+        borderDash: [3, 3],
         tension: 0.4,
         yAxisID: "y-humidity",
       },
